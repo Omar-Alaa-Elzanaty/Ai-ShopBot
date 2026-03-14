@@ -1,23 +1,75 @@
+using Ai_shopBot.Infrastructure.Extensions;
+using Ai_ShopBot.API;
+using Ai_ShopBot.Application.Extensions;
+using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Presistance.Context;
+using Ai_ShopBot.Presistance.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddApplication()
+    .AddPersistance(builder.Configuration)
+    .AddInfrastructure();
+
+builder.Services.AddAPIDependencies(builder.Configuration);
+
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+//if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
+app.UseCors(x =>
+{
+    x.AllowAnyHeader()
+     .AllowAnyMethod()
+     .AllowAnyOrigin();
+});
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ShopDbContext>();
+    var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+    var totalMigrations = await context.Database.GetAppliedMigrationsAsync();
+    if (pendingMigrations.Count() == totalMigrations.Count() && pendingMigrations.Count() == 0)
+    {
+        await context.Database.MigrateAsync();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+        await roleManager.CreateAsync(new IdentityRole("Client"));
+
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        await userManager.CreateAsync(new User
+        {
+            UserName = "admin",
+            Email = "admin@gmail.com",
+            FullName = "Admin"
+        }, "123@Abc");
+    }
+    else if (pendingMigrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
+}
 
 app.Run();

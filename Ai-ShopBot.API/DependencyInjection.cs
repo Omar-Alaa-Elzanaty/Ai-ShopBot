@@ -1,0 +1,82 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using System.Text;
+
+namespace Ai_ShopBot.API
+{
+    public static class DependencyInjection
+    {
+        public static IServiceCollection AddAPIDependencies(this IServiceCollection services, IConfiguration configuration)
+        {
+
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer((document, context, cancellationToken) =>
+                {
+                    // 1. Define the Scheme in Components
+                    var scheme = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT"
+                    };
+
+                    document.Components ??= new OpenApiComponents();
+                    document.Components.SecuritySchemes.Add("Bearer", scheme);
+
+                    // 2. Add the Requirement using the "Bearer" ID
+                    document.Security = new List<OpenApiSecurityRequirement>();
+
+                    return Task.CompletedTask;
+                });
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = false;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecureKey"]!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Headers["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        // Allow the JWT token to be passed in the query string for hubs
+                        if (!string.IsNullOrEmpty(accessToken) && path.Value.Contains("hub"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAuthorization();
+
+            services.AddHttpContextAccessor();
+
+            return services;
+        }
+    }
+}

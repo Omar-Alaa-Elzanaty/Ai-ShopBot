@@ -1,4 +1,11 @@
 <Solution>
+  <Folder Name="/Core/">
+    <Project Path="Ai-ShopBot.Application/Ai-ShopBot.Application.csproj" />
+    <Project Path="Ai-ShopBot.Croe/Ai-ShopBot.Core.csproj" Id="f05eca08-acdc-4328-90d0-65eea1bc1d39" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Ai-shopBot.Infrastructure/Ai-shopBot.Infrastructure.csproj" Id="cc813fa1-feb3-46a3-a52a-7e12282bd7d2" />
+    <Project Path="Ai-ShopBot.Presistance/Ai-ShopBot.Presistance.csproj" Id="3b768062-f6c5-494f-b872-4eba63de6dca" />
+  </Folder>
   <Project Path="Ai-ShopBot.API/Ai-ShopBot.API.csproj" />
-  <Project Path="Ai-ShopBot.Application/Ai-ShopBot.Application.csproj" />
 </Solution>
