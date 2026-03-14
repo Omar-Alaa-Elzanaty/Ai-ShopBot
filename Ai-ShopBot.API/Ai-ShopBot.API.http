@@ -1,0 +1,6 @@
+@Ai_ShopBot.API_HostAddress = http://localhost:5240
+
+GET {{Ai_ShopBot.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

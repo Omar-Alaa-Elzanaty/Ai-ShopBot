@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Ai-ShopBot.API/Ai-ShopBot.API.csproj" />
+  <Project Path="Ai-ShopBot.Application/Ai-ShopBot.Application.csproj" />
+</Solution>
