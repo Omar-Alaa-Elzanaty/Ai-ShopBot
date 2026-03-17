@@ -11,6 +11,8 @@ This project follows **Clean Architecture** principles and utilizes **CQRS** for
 ### Tech Stack
 * **Backend:** .NET 10 Web API
 * **AI Orchestration:** Microsoft Semantic Kernel (SK Plugins) and Microsot.AI.Extension
+* **gpt-4.1-mini** Model for chat completion.
+* **text-embedding-3-small** for text embedding.
 * **Real-time:** SignalR (for chat streaming)
 * **Primary Database:** MSSQL (Identity, Orders, Cart consistency)
 * **Vector Database:** MongoDB Atlas Vector Search (Semantic product discovery)
@@ -88,3 +90,4 @@ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:lat
 ### 3. Get API key for LLM models
 > **Your Github profile** > **Settings** > **Developer settings** > **Personal Access tokens** > **Fine-grined tokens**
 > **Generate new token** > **Fill required data** > **Add Permissions** > **Models**
+then past as a value for key **AzureOpenAI:ApiKey**
