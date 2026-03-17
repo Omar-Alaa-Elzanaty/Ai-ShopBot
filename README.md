@@ -8,7 +8,7 @@ This project follows **Clean Architecture** principles and utilizes **CQRS** for
 
 
 
-### Tech Stack
+### 🧠 Tech Stack
 * **Backend:** .NET 10 Web API
 * **AI Orchestration:** Microsoft Semantic Kernel (SK Plugins) and Microsot.AI.Extension
 * **gpt-4.1-mini** Model for chat completion.
@@ -17,6 +17,22 @@ This project follows **Clean Architecture** principles and utilizes **CQRS** for
 * **Primary Database:** MSSQL (Identity, Orders, Cart consistency)
 * **Vector Database:** MongoDB Atlas Vector Search (Semantic product discovery)
 * **Caching:** Redis (Distributed session and chat history persistence)
+
+### Backend
+![.NET](https://img.shields.io/badge/.NET_10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?style=flat-square&logo=csharp&logoColor=white)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![SignalR](https://img.shields.io/badge/SignalR-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+
+### AI & Search
+![Semantic Kernel](https://img.shields.io/badge/Semantic_Kernel-0078D4?style=flat-square&logo=microsoft&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)
+
+### Data & Infrastructure
+![MSSQL](https://img.shields.io/badge/MSSQL-CC2927?style=flat-square&logo=microsoftsqlserver&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Entity Framework](https://img.shields.io/badge/EF_Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 
 ---
 
