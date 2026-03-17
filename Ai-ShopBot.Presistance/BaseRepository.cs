@@ -5,7 +5,7 @@ namespace Ai_ShopBot.Presistance
 {
     internal class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly ShopDbContext _context;
+        protected readonly ShopDbContext _context;
 
         public BaseRepository(ShopDbContext context)
         {
@@ -16,9 +16,6 @@ namespace Ai_ShopBot.Presistance
         {
             
         }
-
-        public virtual IQueryable<T> Entities => _context.Set<T>();
-
         public virtual async Task AddAsync(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);

@@ -5,9 +5,14 @@ using Ai_ShopBot.Presistance.Context;
 using Ai_ShopBot.Presistance.Repos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using OpenAI;
 using StackExchange.Redis;
+using System.ClientModel;
+using System.ComponentModel;
 
 namespace Ai_ShopBot.Presistance.Extensions
 {
@@ -18,6 +23,7 @@ namespace Ai_ShopBot.Presistance.Extensions
             services
                 .AddContext(configuration)
                 .AddRedis(configuration)
+                .AddMongoDb(configuration)
                 .AddCollections();
 
             return services;
@@ -39,10 +45,16 @@ namespace Ai_ShopBot.Presistance.Extensions
                     .AddSignInManager()
                     .AddDefaultTokenProviders();
 
+            return services;
+        }
+        static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration config)
+        {
+            services
+                .AddSingleton<IMongoClient>(_ =>
+                new MongoClient(config.GetConnectionString("mongodb")));
 
             return services;
         }
-
         static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IConnectionMultiplexer>(
@@ -54,9 +66,10 @@ namespace Ai_ShopBot.Presistance.Extensions
         static IServiceCollection AddCollections(this IServiceCollection services)
         {
             services
-                .AddScoped<IProductRepository,ProductRepository>()
+                .AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
                 .AddScoped<IUnitOfWork, UnitOfWork>()
-                .AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+                .AddScoped<IProductRepository, ProductRepository>()
+                .AddScoped<IOrderRepository, OrderRepository>();
 
             return services;
         }

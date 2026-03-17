@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ai_ShopBot.Presistance.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20260314145903_InitialCreation")]
+    [Migration("20260315132524_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -33,8 +33,8 @@ namespace Ai_ShopBot.Presistance.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClientId1")
                         .HasColumnType("nvarchar(450)");
@@ -82,8 +82,8 @@ namespace Ai_ShopBot.Presistance.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

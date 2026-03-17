@@ -8,7 +8,7 @@ namespace Ai_ShopBot.Croe.Models
     {
         public int ClientId { get; set; }
         public virtual User Client { get; set; }
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -1,19 +1,23 @@
 using Ai_shopBot.Infrastructure.Extensions;
 using Ai_ShopBot.API;
+using Ai_ShopBot.API.Hubs;
 using Ai_ShopBot.Application.Extensions;
+using Ai_ShopBot.Croe.Constants;
+using Ai_ShopBot.Croe.Interfaces;
 using Ai_ShopBot.Croe.Models;
 using Ai_ShopBot.Presistance.Context;
 using Ai_ShopBot.Presistance.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OpenAI.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddApplication()
-    .AddPersistance(builder.Configuration)
-    .AddInfrastructure();
+builder.Services.AddApplication(builder.Configuration)
+    .AddInfrastructure(builder.Configuration)
+    .AddPersistance(builder.Configuration);
 
 builder.Services.AddAPIDependencies(builder.Configuration);
 
@@ -33,6 +37,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseRouting();
 
+
 app.UseCors(x =>
 {
     x.AllowAnyHeader()
@@ -50,13 +55,13 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ShopDbContext>();
     var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-    var totalMigrations = await context.Database.GetAppliedMigrationsAsync();
-    if (pendingMigrations.Count() == totalMigrations.Count() && pendingMigrations.Count() == 0)
+    var totalMigrations =  context.Database.GetMigrations();
+    if (pendingMigrations.Count() == totalMigrations.Count())
     {
         await context.Database.MigrateAsync();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
-        await roleManager.CreateAsync(new IdentityRole("Client"));
+        await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
+        await roleManager.CreateAsync(new IdentityRole(Roles.Client));
 
         var userManager = services.GetRequiredService<UserManager<User>>();
         await userManager.CreateAsync(new User
@@ -71,5 +76,7 @@ using (var scope = app.Services.CreateScope())
         await context.Database.MigrateAsync();
     }
 }
+
+app.MapHub<ClientHub>("/clientChatHub");
 
 app.Run();

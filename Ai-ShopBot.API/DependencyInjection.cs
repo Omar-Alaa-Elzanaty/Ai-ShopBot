@@ -11,30 +11,21 @@ namespace Ai_ShopBot.API
         public static IServiceCollection AddAPIDependencies(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddOpenApi(options =>
-            {
-                options.AddDocumentTransformer((document, context, cancellationToken) =>
-                {
-                    // 1. Define the Scheme in Components
-                    var scheme = new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Name = "Authorization",
-                        In = ParameterLocation.Header,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT"
-                    };
+            services.AddSwaggerGen(c =>
+             {
+                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Squad API", Version = "v1.0" });
+                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                 {
+                     In = ParameterLocation.Header,
+                     Description = "Please enter token",
+                     Name = "Authorization",
+                     Type = SecuritySchemeType.Http,
+                     BearerFormat = "JWT",
+                     Scheme = "bearer"
+                 });
 
-                    document.Components ??= new OpenApiComponents();
-                    document.Components.SecuritySchemes.Add("Bearer", scheme);
-
-                    // 2. Add the Requirement using the "Bearer" ID
-                    document.Security = new List<OpenApiSecurityRequirement>();
-
-                    return Task.CompletedTask;
-                });
-            });
-
+             });
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -75,6 +66,8 @@ namespace Ai_ShopBot.API
             services.AddAuthorization();
 
             services.AddHttpContextAccessor();
+            services.AddDistributedMemoryCache();
+            services.AddSignalR();
 
             return services;
         }

@@ -1,12 +1,14 @@
 ﻿using Ai_shopBot.Infrastructure.Services;
 using Ai_ShopBot.Croe.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 
 namespace Ai_shopBot.Infrastructure.Extensions
 {
     public static class ServicesCollection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration config)
         {
             services
                 .AddServices();
@@ -17,7 +19,8 @@ namespace Ai_shopBot.Infrastructure.Extensions
         static IServiceCollection AddServices(this IServiceCollection services)
         {
             services
-                .AddScoped<IAuthServices, AuthServices>();
+                .AddScoped<IAuthServices, AuthServices>()
+                .AddScoped<IAiChatAssistantServices, AiChatAssistantSerivces>();
 
             return services;
         }

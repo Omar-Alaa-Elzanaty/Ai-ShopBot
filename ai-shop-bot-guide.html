@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Shop Bot — Architecture Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --accent4: #f7971e;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --tag-bg: #1e1e2e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,101,132,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    letter-spacing: 2px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 6vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 600px;
+    font-weight: 400;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 60px; }
+
+  /* SECTION */
+  section { padding: 70px 60px; border-bottom: 1px solid var(--border); }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+  }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .arch-diagram::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  }
+
+  .arch-row {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 16px;
+    justify-content: center;
+  }
+  .arch-row:last-child { margin-bottom: 0; }
+
+  .arch-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    min-width: 140px;
+    max-width: 200px;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .arch-box:hover { border-color: var(--accent); }
+  .arch-box .box-icon { font-size: 22px; margin-bottom: 8px; }
+  .arch-box .box-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .arch-box .box-sub {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .arch-box.highlight-purple { border-color: rgba(108,99,255,0.5); background: rgba(108,99,255,0.06); }
+  .arch-box.highlight-pink   { border-color: rgba(255,101,132,0.5); background: rgba(255,101,132,0.06); }
+  .arch-box.highlight-green  { border-color: rgba(67,233,123,0.5);  background: rgba(67,233,123,0.06); }
+  .arch-box.highlight-orange { border-color: rgba(247,151,30,0.5);  background: rgba(247,151,30,0.06); }
+  .arch-box.highlight-blue   { border-color: rgba(56,189,248,0.5);  background: rgba(56,189,248,0.06); }
+
+  .arch-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 18px;
+    padding: 0 4px;
+    align-self: center;
+    flex-shrink: 0;
+  }
+  .arch-arrow-down {
+    text-align: center;
+    color: var(--muted);
+    font-size: 18px;
+    margin: 4px 0;
+  }
+
+  /* Q&A CARDS */
+  .qa-grid { display: flex; flex-direction: column; gap: 24px; }
+  .qa-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .qa-question {
+    background: var(--surface2);
+    padding: 20px 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .qa-q-icon {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: white;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .qa-question p {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .qa-answer {
+    padding: 24px 28px;
+  }
+  .qa-answer p {
+    color: #b0b0cc;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .qa-answer p:last-child { margin-bottom: 0; }
+  .qa-answer strong { color: var(--text); }
+
+  /* FLOW STEPS */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+  }
+  .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    width: 2px;
+    height: calc(100% - 20px);
+    background: var(--border);
+  }
+  .flow-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .flow-content {
+    padding: 8px 0 32px;
+    flex: 1;
+  }
+  .flow-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .flow-content p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* TECH STACK */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .tech-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    background: var(--surface2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tech-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .tech-info p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .tech-role {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .role-ai      { background: rgba(108,99,255,0.15); color: #9d96ff; }
+  .role-data    { background: rgba(67,233,123,0.15);  color: #43e97b; }
+  .role-rt      { background: rgba(247,151,30,0.15);  color: #f7971e; }
+  .role-auth    { background: rgba(255,101,132,0.15); color: #ff6584; }
+  .role-cache   { background: rgba(56,189,248,0.15);  color: #38bdf8; }
+
+  /* DECISION TABLE */
+  .decision-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .decision-table thead tr {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+  }
+  .decision-table th {
+    padding: 14px 18px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .decision-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+    color: #c0c0d8;
+  }
+  .decision-table tr:hover td { background: rgba(108,99,255,0.04); }
+  .verdict-yes  { color: var(--accent3); font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .verdict-no   { color: var(--accent2); font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .verdict-cond { color: var(--accent4); font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  /* RESOURCES */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s;
+    display: block;
+  }
+  .resource-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .resource-category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .resource-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .resource-url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    word-break: break-all;
+  }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(108,99,255,0.06);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 13px;
+    color: #b0b0cc;
+    line-height: 1.7;
+  }
+  .callout.orange { border-left-color: var(--accent4); background: rgba(247,151,30,0.06); }
+  .callout.green  { border-left-color: var(--accent3); background: rgba(67,233,123,0.06); }
+  .callout strong { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 60px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">ARCHITECTURE GUIDE v1.0</div>
+  <h1>AI <span>Shop Bot</span><br>System Design</h1>
+  <p>A complete technical blueprint for building a conversational commerce backend — covering intent detection, RAG search, method routing, and clean architecture decisions.</p>
+</div>
+
+<!-- SECTION 1: SYSTEM ARCHITECTURE -->
+<section>
+  <div class="section-label">01 — OVERVIEW</div>
+  <div class="section-title">Full System Architecture</div>
+
+  <div class="arch-diagram">
+    <!-- Layer 1: Client -->
+    <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:12px;">CLIENT LAYER</div>
+    <div class="arch-row" style="justify-content:center;">
+      <div class="arch-box highlight-blue" style="max-width:260px;">
+        <div class="box-icon">💬</div>
+        <div class="box-title">Chat Client</div>
+        <div class="box-sub">Any frontend (Web / Mobile)</div>
+      </div>
+    </div>
+    <div class="arch-arrow-down">↕</div>
+    <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:12px;">REAL-TIME LAYER</div>
+    <div class="arch-row" style="justify-content:center;">
+      <div class="arch-box highlight-orange" style="max-width:260px;">
+        <div class="box-icon">⚡</div>
+        <div class="box-title">SignalR Hub</div>
+        <div class="box-sub">.NET 10 — Real-time messaging</div>
+      </div>
+    </div>
+    <div class="arch-arrow-down">↓</div>
+    <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:12px;">AI PROCESSING LAYER</div>
+    <div class="arch-row">
+      <div class="arch-box highlight-purple">
+        <div class="box-icon">🧠</div>
+        <div class="box-title">Intent Detector</div>
+        <div class="box-sub">Semantic Kernel — Function Calling</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight-purple">
+        <div class="box-icon">🔌</div>
+        <div class="box-title">Plugin Router</div>
+        <div class="box-sub">SK Plugins = your methods</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight-purple">
+        <div class="box-icon">💾</div>
+        <div class="box-title">Redis Context</div>
+        <div class="box-sub">Chat history per session</div>
+      </div>
+    </div>
+    <div class="arch-arrow-down">↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:12px;">DATA LAYER</div>
+    <div class="arch-row">
+      <div class="arch-box highlight-green">
+        <div class="box-icon">🔍</div>
+        <div class="box-title">MongoDB Atlas</div>
+        <div class="box-sub">Vector Search — Products</div>
+      </div>
+      <div class="arch-box highlight-pink">
+        <div class="box-icon">🗃️</div>
+        <div class="box-title">MSSQL</div>
+        <div class="box-sub">Orders, Cart, Auth</div>
+      </div>
+      <div class="arch-box highlight-orange">
+        <div class="box-icon">⚙️</div>
+        <div class="box-title">Embedding Model</div>
+        <div class="box-sub">text-embedding-3-small</div>
+      </div>
+      <div class="arch-box highlight-blue">
+        <div class="box-icon">🔐</div>
+        <div class="box-title">ASP.NET Identity</div>
+        <div class="box-sub">JWT + Refresh Tokens</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: HOW INTENT DETECTION WORKS -->
+<section>
+  <div class="section-label">02 — CORE QUESTIONS ANSWERED</div>
+  <div class="section-title">Your 4 Key Problems — Solved</div>
+
+  <div class="qa-grid">
+
+    <!-- Q1 -->
+    <div class="qa-card">
+      <div class="qa-question">
+        <div class="qa-q-icon">Q1</div>
+        <p>How will you detect which method the user needs to execute and pass the right parameters?</p>
+      </div>
+      <div class="qa-answer">
+        <p>This is exactly what <strong>Microsoft Semantic Kernel's Function Calling</strong> (also called Auto Function Invocation) was built for. You don't write your own intent classifier. Instead, here's the mental model:</p>
+        <p>You define your business methods (Search, CreateOrder, AddToCart, etc.) as <strong>SK Plugins</strong>. Each plugin function has a description written in plain English like <em>"Creates an order for a product given its ID and quantity"</em>. You also annotate each parameter with a description like <em>"The unique MongoDB product ID"</em>.</p>
+        <p>When the user sends a message, you pass it to the LLM (GPT-4o) along with all your registered plugins. The model reads the conversation history + user message, then decides on its own which function to call and <strong>extracts the parameters from the conversation</strong>. It returns a structured JSON tool call like <code>CreateOrder(productId: "abc123", qty: 1)</code>. Your SK kernel intercepts that, invokes your real .NET method, and returns the result back to the model to formulate a natural response.</p>
+        <div class="callout"><strong>Key insight:</strong> You never write an if/else intent switch. The LLM is the router. Your job is to write clear plugin descriptions so the model makes the right routing decision.</div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="qa-card">
+      <div class="qa-question">
+        <div class="qa-q-icon">Q2</div>
+        <p>Do you need two different AI models — one for chat and one for vector search (embeddings/RAG)?</p>
+      </div>
+      <div class="qa-answer">
+        <p><strong>Yes, you need two different model types — but from the same provider.</strong> They serve completely different purposes and cannot be swapped.</p>
+        <p><strong>Chat / Reasoning Model</strong> (e.g. <code>gpt-4o</code> or <code>gpt-4o-mini</code>): This is the brain. It reads conversation history, understands intent, decides which plugin to call, and generates the natural language responses the user sees. It cannot create embeddings.</p>
+        <p><strong>Embedding Model</strong> (e.g. <code>text-embedding-3-small</code>): This is a mathematical transformer. It converts text into a dense numeric vector (array of floats). You use it in two places: (1) at product ingestion time — embed each product description and store it in MongoDB, (2) at query time — embed the user's search phrase and run <code>$vectorSearch</code> in MongoDB to find semantically similar products. It has no conversational ability at all.</p>
+        <div class="callout green"><strong>In practice:</strong> Semantic Kernel manages both. You register both models with the kernel. Your SearchProducts plugin internally calls the embedding model, does the MongoDB vector search, and returns results. The chat model never knows this happened — it just sees the returned product list.</div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="qa-card">
+      <div class="qa-question">
+        <div class="qa-q-icon">Q3</div>
+        <p>Do you need a design pattern like Factory Pattern to handle method selection?</p>
+      </div>
+      <div class="qa-answer">
+        <p><strong>No — the Factory Pattern is not needed here, and using it would be a mistake.</strong> The Factory Pattern solves the problem of "I need to decide at runtime which concrete class to instantiate." But in your case, the LLM is already making that decision through Function Calling.</p>
+        <p>If you try to build a Factory on top of LLM function calling, you end up with double routing logic: the LLM picks a function, then your factory also tries to pick an implementation. This creates unnecessary complexity and two sources of truth for routing.</p>
+        <p>The pattern that <em>does</em> apply naturally here is the <strong>Plugin Pattern</strong> (which is Semantic Kernel's own term). Think of each plugin class as a self-contained capability module: <code>ProductPlugin</code>, <code>OrderPlugin</code>, <code>CartPlugin</code>, <code>ReviewPlugin</code>. Each one registers its functions with SK. This is structurally similar to a Strategy Pattern — each plugin encapsulates a behavior — but without a separate factory to instantiate them.</p>
+        <div class="callout orange"><strong>One genuine use-case for a pattern:</strong> If you want multiple search strategies (vector search vs. keyword fallback vs. category filter), a Strategy Pattern inside your <code>ProductPlugin</code> makes sense. But that's an internal implementation detail, not the top-level routing.</div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="qa-card">
+      <div class="qa-question">
+        <div class="qa-q-icon">Q4</div>
+        <p>In Clean Architecture, should every operation be CQRS (Commands/Queries) or can you use a single service class?</p>
+      </div>
+      <div class="qa-answer">
+        <p><strong>CQRS is the right call here, and here's why it matters specifically for your project — not just as a rule.</strong></p>
+        <p>Your system has a clear read/write split already baked in by design. Reads (SearchProducts, GetOrderHistory, GetCart) hit MongoDB + Redis and are called frequently in chat context. Writes (CreateOrder, AddToCart, SubmitReview) hit MSSQL and have side effects like sending notifications or updating inventory. If you put all of this in a single <code>ShopService</code> class, it will grow to hundreds of lines and become impossible to test in isolation.</p>
+        <p>With CQRS + MediatR: each SK Plugin method simply creates a Command or Query object and dispatches it via <code>mediator.Send()</code>. The handler lives in the Application layer and knows nothing about SignalR or Semantic Kernel. This means you can unit test every business operation independently, add pipeline behaviors (validation, logging, caching) in one place, and your SK plugins stay thin — they're just translators between the AI layer and your application core.</p>
+        <div class="callout"><strong>Practical rule:</strong> Any operation that changes state = <strong>Command</strong>. Any operation that only reads data = <strong>Query</strong>. Your SK plugin methods become one-liner dispatchers. All business logic lives in handlers.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 3: INTENT FLOW -->
+<section>
+  <div class="section-label">03 — REQUEST LIFECYCLE</div>
+  <div class="section-title">How a User Message Gets Processed</div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>User sends message via SignalR Hub</h4>
+        <p>Client sends <code>"I need a summer jacket around 200 EGP"</code> over WebSocket connection. The Hub authenticates the user via JWT, retrieves the session ID, and passes the message to the Chat Orchestrator.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Load conversation history from Redis</h4>
+        <p>The orchestrator fetches the last N messages for this session from Redis. This gives the LLM full context — the user may have said "the blue one" referring to a product mentioned 2 turns ago. Redis TTL handles session expiry automatically.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Semantic Kernel sends to LLM with plugins registered</h4>
+        <p>SK builds the full prompt: system instructions + conversation history + current message + list of available plugin functions with their descriptions. This is sent to GPT-4o. The model does not execute anything — it responds with a tool call decision.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>LLM returns: call SearchProducts("summer jacket", maxPrice: 200)</h4>
+        <p>The model determines the user wants to search, not order. It returns a structured function call with extracted parameters. SK automatically intercepts this before it reaches your code — this is Auto Function Invocation.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-content">
+        <h4>SK invokes your SearchProducts plugin method</h4>
+        <p>Your plugin method fires. Internally it: (a) calls the embedding model to vectorize "summer jacket", (b) runs <code>$vectorSearch</code> in MongoDB with a price filter, (c) returns top 5 matching products as a JSON list back to SK.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">6</div>
+      <div class="flow-content">
+        <h4>LLM generates final natural language response</h4>
+        <p>SK passes the function result back to the model. The model now formats a friendly response: <em>"I found 3 summer jackets in your budget! Here's what caught my eye..."</em> along with the structured product data.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">7</div>
+      <div class="flow-content">
+        <h4>Save to Redis, stream back via SignalR</h4>
+        <p>Both the user message and assistant response are appended to Redis history. The response is streamed back to the client in real-time through the SignalR Hub — the user sees tokens appearing as they're generated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: TECH STACK -->
+<section>
+  <div class="section-label">04 — TECHNOLOGY STACK</div>
+  <div class="section-title">Every Tool and Its Exact Role</div>
+
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-icon">🧠</div>
+      <div class="tech-info">
+        <div class="tech-role role-ai">AI FRAMEWORK</div>
+        <h4>Microsoft Semantic Kernel</h4>
+        <p>Orchestrates the LLM, manages plugins (your methods), handles Auto Function Invocation, and chains multi-step AI operations. The core brain of routing.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🔍</div>
+      <div class="tech-info">
+        <div class="tech-role role-ai">EMBEDDINGS + SEARCH</div>
+        <h4>MongoDB Atlas Vector Search</h4>
+        <p>Stores product embeddings. Runs <code>$vectorSearch</code> aggregation pipeline for semantic product matching. Also stores product catalog (flexible schema).</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">⚡</div>
+      <div class="tech-info">
+        <div class="tech-role role-rt">REAL-TIME</div>
+        <h4>SignalR (ASP.NET Core)</h4>
+        <p>Persistent WebSocket connection for chat. Enables streaming responses token-by-token. Handles connection groups per user session.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🗃️</div>
+      <div class="tech-info">
+        <div class="tech-role role-data">TRANSACTIONAL DATA</div>
+        <h4>MSSQL + EF Core</h4>
+        <p>Stores orders, cart items, user profiles. ACID transactions for order creation and payment. Strong consistency where it matters.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🔐</div>
+      <div class="tech-info">
+        <div class="tech-role role-auth">AUTHENTICATION</div>
+        <h4>ASP.NET Identity + JWT</h4>
+        <p>User registration/login. JWT for stateless API auth. Refresh token rotation. SignalR hub authentication via Bearer token in query string.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">⚙️</div>
+      <div class="tech-info">
+        <div class="tech-role role-cache">CACHE + HISTORY</div>
+        <h4>Redis (StackExchange.Redis)</h4>
+        <p>Stores serialized conversation history per session with TTL. Also cacheable: product results, user cart summary. Prevents redundant DB calls mid-conversation.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">📐</div>
+      <div class="tech-info">
+        <div class="tech-role role-data">ARCHITECTURE</div>
+        <h4>Clean Architecture + CQRS</h4>
+        <p>Domain → Application (MediatR handlers) → Infrastructure → API. SK Plugins live in Application layer as thin dispatchers to MediatR commands/queries.</p>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🔢</div>
+      <div class="tech-info">
+        <div class="tech-role role-ai">EMBEDDING MODEL</div>
+        <h4>text-embedding-3-small (OpenAI)</h4>
+        <p>Converts product descriptions and user queries into 1536-dimension vectors. Called during product ingestion pipeline and at search time. Very cheap per token.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: DESIGN PATTERN DECISIONS -->
+<section>
+  <div class="section-label">05 — DESIGN DECISIONS</div>
+  <div class="section-title">Pattern Usage Summary</div>
+
+  <table class="decision-table">
+    <thead>
+      <tr>
+        <th>Pattern / Approach</th>
+        <th>Use It?</th>
+        <th>Where & Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SK Plugin Pattern</strong></td>
+        <td><span class="verdict-yes">✓ YES</span></td>
+        <td>Your primary method-routing mechanism. Each plugin class groups related capabilities (ProductPlugin, OrderPlugin, CartPlugin, ReviewPlugin). This IS your architecture for intent → action.</td>
+      </tr>
+      <tr>
+        <td><strong>CQRS + MediatR</strong></td>
+        <td><span class="verdict-yes">✓ YES</span></td>
+        <td>Inside Application layer. Every SK plugin method dispatches a Command or Query. Keeps plugins thin, handlers testable, and adds pipeline behavior support (validation, logging, caching).</td>
+      </tr>
+      <tr>
+        <td><strong>Repository Pattern</strong></td>
+        <td><span class="verdict-yes">✓ YES</span></td>
+        <td>In Infrastructure layer. <code>IProductRepository</code>, <code>IOrderRepository</code>. Your MediatR handlers depend on these interfaces, not concrete DB implementations. Makes testing clean.</td>
+      </tr>
+      <tr>
+        <td><strong>Strategy Pattern</strong></td>
+        <td><span class="verdict-cond">⚡ OPTIONAL</span></td>
+        <td>Useful inside ProductPlugin if you want fallback search logic: try vector search → if low confidence, fallback to keyword search. Inject as <code>ISearchStrategy</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Factory Pattern</strong></td>
+        <td><span class="verdict-no">✗ NO</span></td>
+        <td>Not needed. The LLM + SK already handles plugin/method selection. Adding a factory creates redundant routing logic and two sources of truth.</td>
+      </tr>
+      <tr>
+        <td><strong>Observer / Event-Driven</strong></td>
+        <td><span class="verdict-cond">⚡ LATER</span></td>
+        <td>Useful when orders trigger notifications or inventory updates. MediatR's INotification handles this well — publish an OrderCreatedEvent after writing to DB.</td>
+      </tr>
+      <tr>
+        <td><strong>Singleton for SK Kernel</strong></td>
+        <td><span class="verdict-yes">✓ YES</span></td>
+        <td>Register the Semantic Kernel instance as a singleton in DI container. It's thread-safe and expensive to create. Plugins can be transient/scoped if they depend on user context.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 6: CLEAN ARCHITECTURE LAYERS -->
+<section>
+  <div class="section-label">06 — CLEAN ARCHITECTURE MAP</div>
+  <div class="section-title">What Lives Where</div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+    <div style="background:var(--surface); border:1px solid rgba(108,99,255,0.4); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:12px;">DOMAIN LAYER</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">No dependencies on anything external.</p>
+      <ul style="font-size:13px; color:#b0b0cc; padding-left:16px; line-height:2;">
+        <li>Product, Order, Cart, Review entities</li>
+        <li>Value Objects (Money, ProductId)</li>
+        <li>Domain Events (OrderCreated)</li>
+        <li>Repository interfaces (<code>IOrderRepository</code>)</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--surface); border:1px solid rgba(67,233,123,0.4); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent3); letter-spacing:2px; margin-bottom:12px;">APPLICATION LAYER</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Business logic. References only Domain.</p>
+      <ul style="font-size:13px; color:#b0b0cc; padding-left:16px; line-height:2;">
+        <li>MediatR Commands & Queries</li>
+        <li>Command/Query Handlers</li>
+        <li>SK Plugin classes (thin dispatchers)</li>
+        <li>DTOs and mapping logic</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--surface); border:1px solid rgba(247,151,30,0.4); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent4); letter-spacing:2px; margin-bottom:12px;">INFRASTRUCTURE LAYER</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">All external dependencies.</p>
+      <ul style="font-size:13px; color:#b0b0cc; padding-left:16px; line-height:2;">
+        <li>MongoDB + EF Core implementations</li>
+        <li>Redis chat history service</li>
+        <li>OpenAI embedding service</li>
+        <li>ASP.NET Identity configuration</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--surface); border:1px solid rgba(255,101,132,0.4); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:12px;">API / PRESENTATION LAYER</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Entry points only. No business logic.</p>
+      <ul style="font-size:13px; color:#b0b0cc; padding-left:16px; line-height:2;">
+        <li>SignalR Hub (ChatHub.cs)</li>
+        <li>REST Controllers (Auth, Admin)</li>
+        <li>SK Kernel registration + DI setup</li>
+        <li>Middleware (JWT, error handling)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 7: RESOURCES -->
+<section>
+  <div class="section-label">07 — LEARNING RESOURCES</div>
+  <div class="section-title">Everything You Need to Build This</div>
+
+  <div class="resources-grid">
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/semantic-kernel/overview/" target="_blank">
+      <div class="resource-category">SEMANTIC KERNEL — START HERE</div>
+      <div class="resource-title">Semantic Kernel Official Docs</div>
+      <div class="resource-url">learn.microsoft.com/en-us/semantic-kernel/overview/</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/semantic-kernel/concepts/plugins/" target="_blank">
+      <div class="resource-category">SEMANTIC KERNEL — PLUGINS</div>
+      <div class="resource-title">SK Plugins & Function Calling</div>
+      <div class="resource-url">learn.microsoft.com/en-us/semantic-kernel/concepts/plugins/</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/semantic-kernel/concepts/ai-services/chat-completion/function-calling/" target="_blank">
+      <div class="resource-category">SEMANTIC KERNEL — CORE CONCEPT</div>
+      <div class="resource-title">Auto Function Invocation (Intent Routing)</div>
+      <div class="resource-url">learn.microsoft.com — function-calling</div>
+    </a>
+
+    <a class="resource-card" href="https://www.mongodb.com/docs/atlas/atlas-vector-search/tutorials/vector-search-tutorial/" target="_blank">
+      <div class="resource-category">MONGODB — VECTOR SEARCH</div>
+      <div class="resource-title">Atlas Vector Search Tutorial</div>
+      <div class="resource-url">mongodb.com/docs/atlas/atlas-vector-search/tutorials/</div>
+    </a>
+
+    <a class="resource-card" href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/" target="_blank">
+      <div class="resource-category">MONGODB — PIPELINE</div>
+      <div class="resource-title">$vectorSearch Aggregation Stage</div>
+      <div class="resource-url">mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/</div>
+    </a>
+
+    <a class="resource-card" href="https://platform.openai.com/docs/guides/embeddings" target="_blank">
+      <div class="resource-category">OPENAI — EMBEDDINGS</div>
+      <div class="resource-title">OpenAI Embeddings Guide (text-embedding-3-small)</div>
+      <div class="resource-url">platform.openai.com/docs/guides/embeddings</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction" target="_blank">
+      <div class="resource-category">SIGNALR</div>
+      <div class="resource-title">ASP.NET Core SignalR Introduction</div>
+      <div class="resource-url">learn.microsoft.com/en-us/aspnet/core/signalr/introduction</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz" target="_blank">
+      <div class="resource-category">SIGNALR — AUTH</div>
+      <div class="resource-title">SignalR Authentication & JWT</div>
+      <div class="resource-url">learn.microsoft.com — signalr/authn-and-authz</div>
+    </a>
+
+    <a class="resource-card" href="https://github.com/jbogard/MediatR/wiki" target="_blank">
+      <div class="resource-category">CQRS</div>
+      <div class="resource-title">MediatR Wiki — Commands, Queries, Notifications</div>
+      <div class="resource-url">github.com/jbogard/MediatR/wiki</div>
+    </a>
+
+    <a class="resource-card" href="https://jasontaylor.dev/clean-architecture-getting-started/" target="_blank">
+      <div class="resource-category">CLEAN ARCHITECTURE</div>
+      <div class="resource-title">Jason Taylor — Clean Architecture Getting Started</div>
+      <div class="resource-url">jasontaylor.dev/clean-architecture-getting-started/</div>
+    </a>
+
+    <a class="resource-card" href="https://github.com/jasontaylordev/CleanArchitecture" target="_blank">
+      <div class="resource-category">CLEAN ARCHITECTURE — TEMPLATE</div>
+      <div class="resource-title">Clean Architecture Solution Template (GitHub)</div>
+      <div class="resource-url">github.com/jasontaylordev/CleanArchitecture</div>
+    </a>
+
+    <a class="resource-card" href="https://stackexchange.github.io/StackExchange.Redis/" target="_blank">
+      <div class="resource-category">REDIS</div>
+      <div class="resource-title">StackExchange.Redis Documentation</div>
+      <div class="resource-url">stackexchange.github.io/StackExchange.Redis/</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity" target="_blank">
+      <div class="resource-category">IDENTITY</div>
+      <div class="resource-title">ASP.NET Core Identity Overview</div>
+      <div class="resource-url">learn.microsoft.com — authentication/identity</div>
+    </a>
+
+    <a class="resource-card" href="https://learn.microsoft.com/en-us/semantic-kernel/concepts/vector-store-connectors/" target="_blank">
+      <div class="resource-category">SEMANTIC KERNEL + MONGODB</div>
+      <div class="resource-title">SK Vector Store Connectors (MongoDB integration)</div>
+      <div class="resource-url">learn.microsoft.com — vector-store-connectors</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- SECTION 8: BUILD ORDER -->
+<section>
+  <div class="section-label">08 — SUGGESTED BUILD ORDER</div>
+  <div class="section-title">How to Approach Development Phase by Phase</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:16px;">PHASE 1 — FOUNDATION</div>
+      <div class="flow" style="gap:0;">
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">01</span>Clean Architecture project structure</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">02</span>MSSQL + EF Core + Identity setup</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">03</span>JWT Auth endpoints working</div>
+        <div style="padding:10px 0; font-size:13px; color:#b0b0cc;"><span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">04</span>Basic SignalR Hub with auth</div>
+      </div>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent3); letter-spacing:2px; margin-bottom:16px;">PHASE 2 — AI CORE</div>
+      <div class="flow" style="gap:0;">
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">05</span>MongoDB + product ingestion + embeddings</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">06</span>Semantic Kernel + SearchProducts plugin</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">07</span>Redis chat history integration</div>
+        <div style="padding:10px 0; font-size:13px; color:#b0b0cc;"><span style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">08</span>Wire SK to SignalR — basic chat works</div>
+      </div>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent4); letter-spacing:2px; margin-bottom:16px;">PHASE 3 — BUSINESS FEATURES</div>
+      <div class="flow" style="gap:0;">
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent4); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">09</span>OrderPlugin + CQRS CreateOrder</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent4); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">10</span>CartPlugin (add, remove, view)</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent4); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">11</span>ReviewPlugin (submit, fetch)</div>
+        <div style="padding:10px 0; font-size:13px; color:#b0b0cc;"><span style="color:var(--accent4); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">12</span>OrderHistory, Tracking plugins</div>
+      </div>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:16px;">PHASE 4 — POLISH</div>
+      <div class="flow" style="gap:0;">
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">13</span>MediatR pipeline: validation + logging</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">14</span>Response streaming (SK + SignalR)</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; color:#b0b0cc;"><span style="color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">15</span>Redis caching for frequent queries</div>
+        <div style="padding:10px 0; font-size:13px; color:#b0b0cc;"><span style="color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:10px;">16</span>Error handling, fallback responses</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  AI SHOP BOT — ARCHITECTURE GUIDE &nbsp;·&nbsp; Built for a .NET 10 Backend &nbsp;·&nbsp; Semantic Kernel + MongoDB Atlas + SignalR
+</footer>
+
+</body>
+</html>
