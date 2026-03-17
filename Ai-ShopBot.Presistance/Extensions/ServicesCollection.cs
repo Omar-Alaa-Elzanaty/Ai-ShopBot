@@ -1,18 +1,14 @@
-﻿using Ai_ShopBot.Croe.Interfaces;
-using Ai_ShopBot.Croe.Interfaces.Repo;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Application.Interfaces.Repo;
 using Ai_ShopBot.Croe.Models;
 using Ai_ShopBot.Presistance.Context;
 using Ai_ShopBot.Presistance.Repos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using OpenAI;
 using StackExchange.Redis;
-using System.ClientModel;
-using System.ComponentModel;
 
 namespace Ai_ShopBot.Presistance.Extensions
 {

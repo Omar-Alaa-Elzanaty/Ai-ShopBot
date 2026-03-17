@@ -1,4 +1,5 @@
-﻿using Ai_ShopBot.Croe.Interfaces.Repo;
+﻿using Ai_ShopBot.Application.Interfaces.Repo;
+using Ai_ShopBot.Croe.DTOs.ProductRepo;
 using Ai_ShopBot.Croe.Models;
 using MongoDB.Driver;
 
@@ -43,5 +44,22 @@ namespace Ai_ShopBot.Presistance.Repos
             }
         }
 
+        public async Task<List<ProductForOrderItemDto>> GetProductsForOrderItem(List<string> productIds)
+        {
+            var filter = Builders<Product>.Filter.In(p => p.Id, productIds);
+
+            var projection = Builders<Product>.Projection.Combine();
+
+            return await _productCollection
+                .Find(filter)
+                .Project(p => new ProductForOrderItemDto
+                {
+                    Id = p.Id,
+                    Color = p.Color,
+                    Name = p.Name,
+                    Size = p.Size
+                })
+                .ToListAsync();
+        }
     }
 }

@@ -3,13 +3,11 @@ using Ai_ShopBot.API;
 using Ai_ShopBot.API.Hubs;
 using Ai_ShopBot.Application.Extensions;
 using Ai_ShopBot.Croe.Constants;
-using Ai_ShopBot.Croe.Interfaces;
 using Ai_ShopBot.Croe.Models;
 using Ai_ShopBot.Presistance.Context;
 using Ai_ShopBot.Presistance.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OpenAI.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +53,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ShopDbContext>();
     var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-    var totalMigrations =  context.Database.GetMigrations();
+    var totalMigrations = context.Database.GetMigrations();
     if (pendingMigrations.Count() == totalMigrations.Count())
     {
         await context.Database.MigrateAsync();

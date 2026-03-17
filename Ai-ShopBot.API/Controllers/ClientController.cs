@@ -1,5 +1,5 @@
-﻿using Ai_ShopBot.Croe.Constants;
-using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Croe.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

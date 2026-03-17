@@ -1,5 +1,5 @@
-﻿using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Croe.DTOs;
 using Ai_ShopBot.Croe.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +33,7 @@ namespace Ai_ShopBot.Application.Features.Auth.Login
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
 
-            if(user == null)
+            if (user == null)
             {
                 return BaseResponse<LoginQueryDto>.Failure("Invalid username or password", HttpStatusCode.Unauthorized);
             }

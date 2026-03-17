@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ai_ShopBot.Croe.Interfaces
+namespace Ai_ShopBot.Application.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {

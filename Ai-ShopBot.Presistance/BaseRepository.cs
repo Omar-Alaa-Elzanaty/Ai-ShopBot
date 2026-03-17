@@ -1,11 +1,11 @@
-﻿using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
 using Ai_ShopBot.Presistance.Context;
 
 namespace Ai_ShopBot.Presistance
 {
     internal class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected readonly ShopDbContext _context;
+        private readonly ShopDbContext _context;
 
         public BaseRepository(ShopDbContext context)
         {
@@ -14,7 +14,7 @@ namespace Ai_ShopBot.Presistance
 
         public BaseRepository()
         {
-            
+
         }
         public virtual async Task AddAsync(T entity)
         {

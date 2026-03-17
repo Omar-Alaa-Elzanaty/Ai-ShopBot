@@ -1,4 +1,6 @@
 ﻿using Ai_ShopBot.Application.Features.Orders.Commands.Create;
+using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
+using Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination;
 using Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt.GetProductsWithPrompt;
 using FluentValidation;
 using Mapster;
@@ -75,7 +77,9 @@ namespace Ai_ShopBot.Application.Extensions
             services.AddKernel()
                 .Plugins
                 .AddFromType<GetProductsWithPromptPlugin>("Get_products")
-                .AddFromType<CreateOrderPlugin>("Create_order");
+                .AddFromType<CreateOrderPlugin>("Create_order")
+                .AddFromType<GetOrdersPlugin>("Get_Orders")
+                .AddFromType<GetOrderByIdPlugin>("Get_Order_By_Id");
 
             services.AddSingleton(sp => sp.GetRequiredService<IChatClient>()
             .AsChatCompletionService());

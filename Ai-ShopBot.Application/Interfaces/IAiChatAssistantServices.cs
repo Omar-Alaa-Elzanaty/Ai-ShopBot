@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Ai_ShopBot.Croe.Interfaces
+﻿namespace Ai_ShopBot.Application.Interfaces
 {
     public interface IAiChatAssistantServices
     {

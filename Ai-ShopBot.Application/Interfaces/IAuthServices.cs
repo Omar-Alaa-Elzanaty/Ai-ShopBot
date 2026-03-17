@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Croe.Models;
 
-namespace Ai_ShopBot.Croe.Interfaces
+namespace Ai_ShopBot.Application.Interfaces
 {
     public interface IAuthServices
     {

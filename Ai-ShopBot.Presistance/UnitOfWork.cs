@@ -1,5 +1,5 @@
-﻿using Ai_ShopBot.Croe.Interfaces;
-using Ai_ShopBot.Croe.Interfaces.Repo;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Application.Interfaces.Repo;
 using Ai_ShopBot.Croe.Models;
 using Ai_ShopBot.Presistance.Context;
 using StackExchange.Redis;
@@ -22,7 +22,7 @@ namespace Ai_ShopBot.Presistance
             ProductsRepo = productsRepo;
             CartsRepo = cartsRepo;
             OrdersRepo = ordersRepo;
-            _redis= redis.GetDatabase();
+            _redis = redis.GetDatabase();
         }
 
         public IProductRepository ProductsRepo { get; private set; }

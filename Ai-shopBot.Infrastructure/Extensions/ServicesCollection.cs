@@ -1,14 +1,13 @@
 ﻿using Ai_shopBot.Infrastructure.Services;
-using Ai_ShopBot.Croe.Interfaces;
+using Ai_ShopBot.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
 
 namespace Ai_shopBot.Infrastructure.Extensions
 {
     public static class ServicesCollection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration config)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
             services
                 .AddServices();

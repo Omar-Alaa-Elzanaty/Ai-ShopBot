@@ -1,5 +1,5 @@
-﻿using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Croe.DTOs;
 using Ai_ShopBot.Croe.Models;
 using FluentValidation;
 using Mapster;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Ai_ShopBot.Application.Features.Auth.Register
 {
-    public class RegisterCommand:IRequest<BaseResponse<string>>
+    public class RegisterCommand : IRequest<BaseResponse<string>>
     {
         public string FullName { get; set; }
         public string Email { get; set; }
@@ -38,16 +38,16 @@ namespace Ai_ShopBot.Application.Features.Auth.Register
         {
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-            if(!validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
                 return BaseResponse<string>.ValidationFailure(validationResult.Errors);
             }
 
             var user = request.Adapt<User>();
 
-            var identityResult= await _userManager.CreateAsync(user, request.Password);
+            var identityResult = await _userManager.CreateAsync(user, request.Password);
 
-            if(!identityResult.Succeeded)
+            if (!identityResult.Succeeded)
             {
                 return BaseResponse<string>.ValidationFailure(identityResult.Errors);
             }

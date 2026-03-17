@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel;
@@ -52,7 +52,7 @@ namespace Ai_shopBot.Infrastructure.Services
                     var userMessage = messageStr[..separtedIndex];
                     var assistantMessage = messageStr[(separtedIndex + 1)..];
 
-                     chatHistory.Add(new ChatMessage(ChatRole.User, userMessage));
+                    chatHistory.Add(new ChatMessage(ChatRole.User, userMessage));
                     chatHistory.Add(new ChatMessage(ChatRole.Assistant, assistantMessage));
                 }
             }

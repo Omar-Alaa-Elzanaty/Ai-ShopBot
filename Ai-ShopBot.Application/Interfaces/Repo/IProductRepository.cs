@@ -1,7 +1,9 @@
-﻿using Ai_ShopBot.Croe.Models;
+﻿using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
+using Ai_ShopBot.Croe.DTOs.ProductRepo;
+using Ai_ShopBot.Croe.Models;
 using MongoDB.Driver;
 
-namespace Ai_ShopBot.Croe.Interfaces.Repo
+namespace Ai_ShopBot.Application.Interfaces.Repo
 {
     public interface IProductRepository
     {
@@ -16,5 +18,6 @@ namespace Ai_ShopBot.Croe.Interfaces.Repo
         void Update(Product entity);
 
         void UpdateRange(IEnumerable<Product> entities);
+        Task<List<ProductForOrderItemDto>> GetProductsForOrderItem(List<string> productIds);
     }
 }

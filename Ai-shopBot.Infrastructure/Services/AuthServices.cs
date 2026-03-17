@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
 using Ai_ShopBot.Croe.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

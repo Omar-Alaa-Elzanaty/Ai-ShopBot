@@ -1,5 +1,5 @@
-﻿using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Interfaces;
+﻿using Ai_ShopBot.Application.Interfaces;
+using Ai_ShopBot.Croe.DTOs;
 using Ai_ShopBot.Croe.Models;
 using FluentValidation;
 using Mapster;
