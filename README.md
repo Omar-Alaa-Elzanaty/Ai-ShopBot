@@ -7,8 +7,7 @@ An intelligent e-commerce orchestration engine built with **.NET 10**, leveragin
 This project follows **Clean Architecture** principles and utilizes **CQRS** for handling AI-driven intents.
 
 
-
-### 🧠 Tech Stack
+## 🧠 Tech Stack
 * **Backend:** .NET 10 Web API
 * **AI Orchestration:** Microsoft Semantic Kernel (SK Plugins) and Microsot.AI.Extension
 * **gpt-4.1-mini** Model for chat completion.
