@@ -4,15 +4,15 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination
+namespace Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination
 {
-    public record GetOrdersWithPaginationQuery : IRequest<PaginatedResponse<GetOrdersWithPaginationQueryDto>>
+    public record GetUserOrdersWithPaginationQuery : IRequest<PaginatedResponse<GetUserOrdersWithPaginationQueryDto>>
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }
 
-    internal class GetOrderWithPaginationQueryHandler : IRequestHandler<GetOrdersWithPaginationQuery, PaginatedResponse<GetOrdersWithPaginationQueryDto>>
+    internal class GetOrderWithPaginationQueryHandler : IRequestHandler<GetUserOrdersWithPaginationQuery, PaginatedResponse<GetUserOrdersWithPaginationQueryDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _context;
@@ -25,12 +25,12 @@ namespace Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination
             _context = context;
         }
 
-        public async Task<PaginatedResponse<GetOrdersWithPaginationQueryDto>> Handle(GetOrdersWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GetUserOrdersWithPaginationQueryDto>> Handle(GetUserOrdersWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var userId = _context.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             return await _unitOfWork.OrdersRepo
-                .GetOrderWithPagination<GetOrdersWithPaginationQueryDto>(userId, request.PageNumber, request.PageSize, cancellationToken);
+                .GetOrderWithPagination<GetUserOrdersWithPaginationQueryDto>(userId, request.PageNumber, request.PageSize, cancellationToken);
         }
     }
 }

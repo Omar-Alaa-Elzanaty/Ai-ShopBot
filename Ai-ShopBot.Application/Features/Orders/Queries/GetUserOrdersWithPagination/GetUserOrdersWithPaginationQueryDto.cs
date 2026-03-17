@@ -1,8 +1,8 @@
 ﻿using Ai_ShopBot.Croe.Enums;
 
-namespace Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination
+namespace Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination
 {
-    public class GetOrdersWithPaginationQueryDto
+    public class GetUserOrdersWithPaginationQueryDto
     {
         public int Id { get; set; }
         public string Address { get; set; }

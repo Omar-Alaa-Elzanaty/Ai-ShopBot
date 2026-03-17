@@ -1,11 +1,14 @@
-﻿using Ai_ShopBot.Application.Features.Products.Commands.CreateProduct;
-using Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt;
+﻿using Ai_ShopBot.Application.Features.Admin.Queries;
+using Ai_ShopBot.Application.Features.Products.Commands.CreateProduct;
+using Ai_ShopBot.Croe.Constants;
 using Ai_ShopBot.Croe.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ai_ShopBot.API.Controllers
 {
+    //[Authorize(Roles = Roles.Admin)]
     public class AdminController : ApiControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,6 +27,12 @@ namespace Ai_ShopBot.API.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet("Orders")]
+        public async Task<ActionResult<PaginatedResponse<GetOrdersWithPaginationQuery>>> GetOrders([FromQuery] GetOrdersWithPaginationQuery query)
+        {
+            return Ok(await _mediator.Send(query));
         }
     }
 }

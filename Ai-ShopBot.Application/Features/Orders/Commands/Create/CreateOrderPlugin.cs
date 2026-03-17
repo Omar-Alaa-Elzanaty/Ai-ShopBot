@@ -22,7 +22,7 @@ namespace Ai_ShopBot.Application.Features.Orders.Commands.Create
             [Description("""
                 The Id of the product to be ordered.
                 [Id] data type MUST be bsonType.objectId with no white spaces.
-                If you couldn't get it try to get from chat history or inform user to insert it.
+                If you couldn't get it try to get from last one or two message in chat history or inform user to insert it.
                 """)]
             public string ProductId { get; set; }
             [Required]

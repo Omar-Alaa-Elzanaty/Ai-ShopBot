@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Application.Features.Orders.Commands.Create;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
-using Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination;
+using Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination;
 using Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt.GetProductsWithPrompt;
 using FluentValidation;
 using Mapster;
