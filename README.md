@@ -90,4 +90,5 @@ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:lat
 ### 3. Get API key for LLM models
 > **Your Github profile** > **Settings** > **Developer settings** > **Personal Access tokens** > **Fine-grined tokens**
 > **Generate new token** > **Fill required data** > **Add Permissions** > **Models**
-then past as a value for key **AzureOpenAI:ApiKey**
+
+#### Past token as a value for key **AzureOpenAI:ApiKey** in appsettings.json
