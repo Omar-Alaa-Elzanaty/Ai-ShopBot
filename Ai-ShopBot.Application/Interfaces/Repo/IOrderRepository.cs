@@ -1,4 +1,5 @@
-﻿using Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination;
+﻿using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
+using Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination;
 using Ai_ShopBot.Croe.DTOs;
 using Ai_ShopBot.Croe.Models;
 
@@ -11,6 +12,6 @@ namespace Ai_ShopBot.Application.Interfaces.Repo
             int pageNumber,
             int PageSize,
             CancellationToken cancellationToken);
-        Task<List<T>> GetOrderItemsByOrderId<T>(int id,string userId);
+        Task<List<GetOrderByIdQueryDto>> GetOrderItemsByOrderId(int id,string userId);
     }
 }

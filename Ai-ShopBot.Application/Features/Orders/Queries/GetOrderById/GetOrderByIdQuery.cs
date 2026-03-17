@@ -37,7 +37,7 @@ namespace Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById
             var userId = _context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var orderItems = await _unitOfWork.OrdersRepo
-                .GetOrderItemsByOrderId<GetOrderByIdQueryDto>(request.Id, userId);
+                .GetOrderItemsByOrderId(request.Id, userId);
 
             if (orderItems == null || orderItems.Count == 0)
             {

@@ -4,7 +4,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ai_ShopBot.Croe.DTOs.ProductRepo
 {
-    [BsonIgnoreExtraElements]
     public class ProductForOrderItemDto
     {
         [BsonRepresentation(BsonType.ObjectId)]

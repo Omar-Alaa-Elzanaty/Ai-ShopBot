@@ -1,4 +1,5 @@
 ﻿using Ai_ShopBot.Application.Extensions;
+using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetOrdersWithPagination;
 using Ai_ShopBot.Application.Interfaces.Repo;
 using Ai_ShopBot.Croe.DTOs;
@@ -30,11 +31,11 @@ namespace Ai_ShopBot.Presistance.Repos
                 .ToPaginatedListAsync(pageNumber, PageSize, cancellationToken);
         }
 
-        public async Task<List<T>> GetOrderItemsByOrderId<T>(int id,string userId)
+        public async Task<List<GetOrderByIdQueryDto>> GetOrderItemsByOrderId(int id,string userId)
         {
             return await _context.OrderItems
                 .Where(x => x.OrderId == id)
-                .ProjectToType<T>()
+                .ProjectToType<GetOrderByIdQueryDto>()
                 .ToListAsync();
         }
     }

@@ -16,8 +16,12 @@ namespace Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt
         }
 
         [KernelFunction]
-        [Description("Get products from the store inventory based on what the user is looking for." +
-            "Return all data that function return in good format like each product represent a card.")]
+        [Description("""
+            
+            - Get products from the store inventory based on what the user is looking for.
+            - If [IsSuccess] Attribute is true return [Data] Attribute in form of cards to user,MUST return Id.
+            - If [IsSuccess] Attribute is false return [Message] Attribute to declare problem to user. 
+            """)]
         public async Task<BaseResponse<List<GetProductsWithPromptQueryDto>>> GetProducts(
             [Description("EXACT words the user typed. Do NOT rephrase, translate, or modify. Pass as-is.")]
             string prompt,
