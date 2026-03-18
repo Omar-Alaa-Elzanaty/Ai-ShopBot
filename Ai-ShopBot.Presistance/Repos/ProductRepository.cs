@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Application.Interfaces.Repo;
-using Ai_ShopBot.Croe.DTOs.ProductRepo;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.DTOs.ProductRepo;
+using Ai_ShopBot.Core.Models;
 using MongoDB.Driver;
 
 namespace Ai_ShopBot.Presistance.Repos

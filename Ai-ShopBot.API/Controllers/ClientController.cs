@@ -1,5 +1,5 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
-using Ai_ShopBot.Croe.Constants;
+using Ai_ShopBot.Core.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,5 +31,7 @@ namespace Ai_ShopBot.API.Controllers
                 await Response.Body.FlushAsync(cancellationToken);
             }
         }
+
+
     }
 }

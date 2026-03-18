@@ -1,8 +1,8 @@
 ﻿using Ai_ShopBot.Application.Features.Admin.Queries;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination;
-using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.DTOs;
+using Ai_ShopBot.Core.Models;
 
 namespace Ai_ShopBot.Application.Interfaces.Repo
 {

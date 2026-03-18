@@ -1,4 +1,4 @@
-﻿namespace Ai_ShopBot.Croe.Models
+﻿namespace Ai_ShopBot.Core.Models
 {
     public class Order
     {

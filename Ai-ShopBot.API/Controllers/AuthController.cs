@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Application.Features.Auth.Login;
 using Ai_ShopBot.Application.Features.Auth.Register;
-using Ai_ShopBot.Croe.DTOs;
+using Ai_ShopBot.Core.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

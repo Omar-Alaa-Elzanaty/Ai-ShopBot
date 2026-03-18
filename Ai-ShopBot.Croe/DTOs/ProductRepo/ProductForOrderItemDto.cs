@@ -1,8 +1,8 @@
-﻿using Ai_ShopBot.Croe.Enums;
+﻿using Ai_ShopBot.Core.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Ai_ShopBot.Croe.DTOs.ProductRepo
+namespace Ai_ShopBot.Core.DTOs.ProductRepo
 {
     public class ProductForOrderItemDto
     {

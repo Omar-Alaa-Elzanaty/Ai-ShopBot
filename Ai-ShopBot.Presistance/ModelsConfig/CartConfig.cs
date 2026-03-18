@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.Models;
+﻿using Ai_ShopBot.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

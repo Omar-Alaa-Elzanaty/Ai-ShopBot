@@ -1,5 +1,5 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
-using Ai_ShopBot.Croe.DTOs;
+using Ai_ShopBot.Core.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;

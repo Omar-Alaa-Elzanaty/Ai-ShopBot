@@ -1,8 +1,8 @@
-﻿using Ai_ShopBot.Croe.Enums;
+﻿using Ai_ShopBot.Core.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Ai_ShopBot.Croe.Models
+namespace Ai_ShopBot.Core.Models
 {
     public class Product
     {

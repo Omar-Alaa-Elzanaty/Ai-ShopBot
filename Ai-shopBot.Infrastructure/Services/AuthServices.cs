@@ -1,5 +1,5 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

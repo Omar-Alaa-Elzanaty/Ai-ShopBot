@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.Enums;
+﻿using Ai_ShopBot.Core.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel;

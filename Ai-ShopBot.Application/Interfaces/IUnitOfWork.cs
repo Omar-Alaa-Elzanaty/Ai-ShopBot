@@ -1,5 +1,5 @@
 ﻿using Ai_ShopBot.Application.Interfaces.Repo;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.Models;
 using StackExchange.Redis;
 
 namespace Ai_ShopBot.Application.Interfaces

@@ -1,4 +1,4 @@
-﻿namespace Ai_ShopBot.Croe.Constants
+﻿namespace Ai_ShopBot.Core.Constants
 {
     public class Roles
     {

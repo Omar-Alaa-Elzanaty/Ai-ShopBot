@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.Enums;
+﻿using Ai_ShopBot.Core.Enums;
 
 namespace Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById
 {

@@ -1,9 +1,9 @@
-﻿using Ai_ShopBot.Croe.Exntensions;
+﻿using Ai_ShopBot.Core.Exntensions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 
-namespace Ai_ShopBot.Croe.DTOs
+namespace Ai_ShopBot.Core.DTOs
 {
     public class BaseResponse<T>
     {

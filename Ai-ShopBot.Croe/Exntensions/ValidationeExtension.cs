@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 
-namespace Ai_ShopBot.Croe.Exntensions
+namespace Ai_ShopBot.Core.Exntensions
 {
     public static class ValidationeExtension
     {

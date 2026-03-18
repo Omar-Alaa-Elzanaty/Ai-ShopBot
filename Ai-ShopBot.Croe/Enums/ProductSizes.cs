@@ -1,4 +1,4 @@
-﻿namespace Ai_ShopBot.Croe.Enums
+﻿namespace Ai_ShopBot.Core.Enums
 {
     public enum ProductSizes
     {

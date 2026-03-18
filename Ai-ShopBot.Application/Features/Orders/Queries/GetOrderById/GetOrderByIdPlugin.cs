@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.DTOs;
+﻿using Ai_ShopBot.Core.DTOs;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;

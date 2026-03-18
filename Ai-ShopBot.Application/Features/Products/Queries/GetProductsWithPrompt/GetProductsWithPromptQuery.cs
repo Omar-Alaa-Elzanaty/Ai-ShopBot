@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
-using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.DTOs;
+using Ai_ShopBot.Core.Models;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.AI;

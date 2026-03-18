@@ -1,7 +1,7 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
-using Ai_ShopBot.Croe.DTOs;
-using Ai_ShopBot.Croe.Enums;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.DTOs;
+using Ai_ShopBot.Core.Enums;
+using Ai_ShopBot.Core.Models;
 using FluentValidation;
 using Mapster;
 using MediatR;

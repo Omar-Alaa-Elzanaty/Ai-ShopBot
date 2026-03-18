@@ -1,7 +1,7 @@
 ﻿using Ai_ShopBot.Application.Features.Admin.Queries;
 using Ai_ShopBot.Application.Features.Products.Commands.CreateProduct;
-using Ai_ShopBot.Croe.Constants;
-using Ai_ShopBot.Croe.DTOs;
+using Ai_ShopBot.Core.Constants;
+using Ai_ShopBot.Core.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

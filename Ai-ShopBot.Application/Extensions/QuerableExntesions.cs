@@ -1,4 +1,4 @@
-﻿using Ai_ShopBot.Croe.DTOs;
+﻿using Ai_ShopBot.Core.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ai_ShopBot.Application.Extensions

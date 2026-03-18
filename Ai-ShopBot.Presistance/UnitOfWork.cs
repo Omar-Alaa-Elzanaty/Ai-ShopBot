@@ -1,6 +1,6 @@
 ﻿using Ai_ShopBot.Application.Interfaces;
 using Ai_ShopBot.Application.Interfaces.Repo;
-using Ai_ShopBot.Croe.Models;
+using Ai_ShopBot.Core.Models;
 using Ai_ShopBot.Presistance.Context;
 using StackExchange.Redis;
 

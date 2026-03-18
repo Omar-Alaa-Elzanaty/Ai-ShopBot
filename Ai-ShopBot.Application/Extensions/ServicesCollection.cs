@@ -1,4 +1,5 @@
-﻿using Ai_ShopBot.Application.Features.Orders.Commands.Create;
+﻿using Ai_ShopBot.Application.Features.Carts.Command.AddToCard;
+using Ai_ShopBot.Application.Features.Orders.Commands.Create;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination;
 using Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt.GetProductsWithPrompt;
@@ -79,7 +80,8 @@ namespace Ai_ShopBot.Application.Extensions
                 .AddFromType<GetProductsWithPromptPlugin>("Get_products")
                 .AddFromType<CreateOrderPlugin>("Create_order")
                 .AddFromType<GetOrdersPlugin>("Get_Orders")
-                .AddFromType<GetOrderByIdPlugin>("Get_Order_By_Id");
+                .AddFromType<GetOrderByIdPlugin>("Get_Order_By_Id")
+                .AddFromType<AddToCardPlugin>("Add_Product_To_Card");
 
             services.AddSingleton(sp => sp.GetRequiredService<IChatClient>()
             .AsChatCompletionService());
