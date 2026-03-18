@@ -16,6 +16,7 @@ This project follows **Clean Architecture** principles and utilizes **CQRS** for
 * **Primary Database:** MSSQL (Identity, Orders, Cart consistency)
 * **Vector Database:** MongoDB Atlas Vector Search (Semantic product discovery)
 * **Caching:** Redis (Distributed session and chat history persistence)
+* **DevOps** Docker
 
 ### Backend
 ![.NET](https://img.shields.io/badge/.NET_10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
@@ -76,17 +77,6 @@ To ensure the AI remembers that "it" refers to the jacket mentioned two messages
 To avoid "Fat Services," every AI action is implemented as a standalone **Command** or **Query**.
 * **Queries:** Handle Vector Search and product fetching.
 * **Commands:** Handle state changes like `CreateOrder` or `GetUserOrderById`.
-
----
-
-## 🛠️ Tech Stack
-
-* **Runtime:** .NET 10 (ASP.NET Core)
-* **Architecture:** Clean Architecture
-* **SQL Database:** Entity Framework Core (MSSQL)
-* **NOSQL Database** MongoDb
-* **Concurrency Control:** Redis (using `Redlock.net`)
-* **DevOps:** Docker
 
 ---
 
