@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ai-ShopBot.Croe\Ai-ShopBot.Core.csproj" />
+    <ProjectReference Include="..\Ai-ShopBot.Core\Ai-ShopBot.Core.csproj" />
   </ItemGroup>
 
 </Project>
