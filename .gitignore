@@ -362,5 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-*appsettings.Development.json
-/Ai-ShopBot.API/appsettings.Development.json
+**/appsettings.Development.json
