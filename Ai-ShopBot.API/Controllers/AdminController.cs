@@ -1,4 +1,5 @@
 ﻿using Ai_ShopBot.Application.Features.Admin.Queries;
+using Ai_ShopBot.Application.Features.Orders.Commands.Delete;
 using Ai_ShopBot.Application.Features.Products.Commands.CreateProduct;
 using Ai_ShopBot.Core.Constants;
 using Ai_ShopBot.Core.DTOs;
@@ -33,6 +34,13 @@ namespace Ai_ShopBot.API.Controllers
         public async Task<ActionResult<PaginatedResponse<GetOrdersWithPaginationQuery>>> GetOrders([FromQuery] GetOrdersWithPaginationQuery query)
         {
             return Ok(await _mediator.Send(query));
+        }
+
+
+        [HttpDelete("Order/{id}")]
+        public async Task<ActionResult<BaseResponse<int>>> DeleteOrder([FromRoute] int id)
+        {
+            return Ok(await _mediator.Send(new DeleteOrderCommand { Id = id }));
         }
     }
 }
