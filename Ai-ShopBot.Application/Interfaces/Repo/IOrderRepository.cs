@@ -15,5 +15,8 @@ namespace Ai_ShopBot.Application.Interfaces.Repo
             CancellationToken cancellationToken);
         Task<List<GetOrderByIdQueryDto>> GetUserOrderItemsByOrderId(int id,string userId);
         Task<PaginatedResponse<GetOrdersWithPaginationQueryDto>> GetOrdersWithPaginationToAdmin(int pageNumber,int pageSize);
+
+        Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
+
     }
 }

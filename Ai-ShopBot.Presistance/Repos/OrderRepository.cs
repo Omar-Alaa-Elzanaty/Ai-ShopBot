@@ -20,6 +20,11 @@ namespace Ai_ShopBot.Presistance.Repos
             _context = context;
         }
 
+        public async Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
         public async Task<PaginatedResponse<GetUserOrdersWithPaginationQueryDto>> GetOrderWithPagination<T>(
             string userId,
             int pageNumber,
