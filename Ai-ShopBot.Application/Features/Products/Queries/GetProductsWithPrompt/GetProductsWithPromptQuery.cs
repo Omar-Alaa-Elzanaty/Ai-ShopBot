@@ -51,7 +51,7 @@ namespace Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt
 
             var vectorSearchOptions = new VectorSearchOptions<Product>
             {
-                IndexName = "vector_index",
+                IndexName = "vector_index_1",
                 NumberOfCandidates = request.Limit * 20,
             };
 

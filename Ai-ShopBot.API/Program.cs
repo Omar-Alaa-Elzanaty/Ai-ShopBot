@@ -6,6 +6,7 @@ using Ai_ShopBot.Core.Constants;
 using Ai_ShopBot.Core.Models;
 using Ai_ShopBot.Presistance.Context;
 using Ai_ShopBot.Presistance.Extensions;
+using Carter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ builder.Services.AddAPIDependencies(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddCarter();
 
 var app = builder.Build();
 
@@ -76,5 +78,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<ClientHub>("/clientChatHub");
+app.MapCarter();
 
 app.Run();
