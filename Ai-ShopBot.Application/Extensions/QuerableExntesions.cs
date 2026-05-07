@@ -11,6 +11,7 @@ namespace Ai_ShopBot.Application.Extensions
         int pageSize,
         CancellationToken cancellationToken,
         string? message = null)
+            where T : class
         {
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
             pageSize = pageSize == 0 ? 10 : pageSize;

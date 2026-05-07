@@ -9,7 +9,7 @@ namespace Ai_ShopBot.Application.Features.Auth.Register
     {
         public RegisterCommandValidator()
         {
-            
+            RuleFor(x => x.FullName).MaximumLength(20);
         }
     }
 }

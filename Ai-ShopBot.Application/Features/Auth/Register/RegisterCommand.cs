@@ -21,28 +21,18 @@ namespace Ai_ShopBot.Application.Features.Auth.Register
     internal class RegisterCommandHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
     {
         private readonly UserManager<User> _userManager;
-        private readonly IValidator<RegisterCommand> _validator;
         private readonly IAuthServices _authServices;
 
         public RegisterCommandHandler(
             UserManager<User> userManager,
-            IValidator<RegisterCommand> validator,
             IAuthServices authServices)
         {
             _userManager = userManager;
-            _validator = validator;
             _authServices = authServices;
         }
 
         public async Task<BaseResponse<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-            {
-                return BaseResponse<string>.ValidationFailure(validationResult.Errors);
-            }
-
             var user = request.Adapt<User>();
 
             var identityResult = await _userManager.CreateAsync(user, request.Password);

@@ -1,21 +1,12 @@
 ﻿using Ai_ShopBot.Core.Exntensions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace Ai_ShopBot.Core.DTOs
 {
-    public class PaginatedResponse<T>
+    public class PaginatedResponse<T> : BaseResponse<IEnumerable<T>> where T : class
     {
-        public bool IsSuccess => (int)StatusCode >= 200 && (int)StatusCode <= 299;
-
-        public HttpStatusCode StatusCode { get; set; }
-        public string? Message { get; set; }
-        public IEnumerable<T>? Data { get; set; }
-        public Dictionary<string, List<string>>? Errors { get; set; }
 
         public PaginatedResponse<T> ToValidationErrors(Dictionary<string, List<string>> errors, HttpStatusCode statusCode,
             string message)
@@ -93,7 +84,7 @@ namespace Ai_ShopBot.Core.DTOs
             return Task.FromResult(Failure(message, statusCode, errors));
         }
 
-        public static PaginatedResponse<T> ValidationFailure(
+        public new static PaginatedResponse<T> ValidationFailure(
             List<ValidationFailure> validationFailures,
             string? message = null)
         {
@@ -103,7 +94,7 @@ namespace Ai_ShopBot.Core.DTOs
                 validationFailures.GetErrorsDictionary());
         }
 
-        public static PaginatedResponse<T> ValidationFailure(IEnumerable<IdentityError> errors)
+        public new static PaginatedResponse<T> ValidationFailure(IEnumerable<IdentityError> errors)
         {
             return new()
             {
@@ -112,7 +103,7 @@ namespace Ai_ShopBot.Core.DTOs
             };
         }
 
-        public static PaginatedResponse<T> ValidationFailure(IEnumerable<IdentityError> errors, string message)
+        public new static PaginatedResponse<T> ValidationFailure(IEnumerable<IdentityError> errors, string message)
         {
             return new()
             {

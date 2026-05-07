@@ -26,27 +26,17 @@ namespace Ai_ShopBot.Application.Features.Orders.Commands.Create
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContext;
-        private readonly IValidator<CreateOrderCommand> _validator;
 
         public CreateOrderCommandHandler(
             IUnitOfWork unitOfWork,
-            IValidator<CreateOrderCommand> validator,
             IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
-            _validator = validator;
             _httpContext = httpContext;
         }
 
         public async Task<BaseResponse<int>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-            {
-                return BaseResponse<int>.ValidationFailure(validationResult.Errors);
-            }
-
             var userId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
             var order = request.Adapt<Order>();

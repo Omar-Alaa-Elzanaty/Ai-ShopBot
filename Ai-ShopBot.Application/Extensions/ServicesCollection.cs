@@ -1,4 +1,5 @@
-﻿using Ai_ShopBot.Application.Features.Carts.Command.AddToCard;
+﻿using Ai_ShopBot.Application.Behaviors;
+using Ai_ShopBot.Application.Features.Carts.Command.AddToCard;
 using Ai_ShopBot.Application.Features.Orders.Commands.Create;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetOrderById;
 using Ai_ShopBot.Application.Features.Orders.Queries.GetUserOrdersWithPagination;
@@ -6,6 +7,7 @@ using Ai_ShopBot.Application.Features.Products.Queries.GetProductsWithPrompt.Get
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
+using MediatR;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +39,12 @@ namespace Ai_ShopBot.Application.Extensions
             services.AddMediatR(configuration =>
             {
                 configuration.RegisterServicesFromAssembly(typeof(ServicesCollection).Assembly);
+
+                configuration.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
             });
+
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+            services.AddValidatorsFromAssembly(typeof(ValidationPipelineBehavior<,>).Assembly, includeInternalTypes: true);
 
             return services;
         }
