@@ -11,17 +11,18 @@ namespace Ai_ShopBot.Presistance
         private readonly ShopDbContext _shopDbContext;
         private readonly IDatabase _redis;
 
-        public UnitOfWork(
-            ShopDbContext shopDbContext,
+        public UnitOfWork(ShopDbContext shopDbContext,
             IProductRepository productsRepo,
             IBaseRepository<Cart> cartsRepo,
             IOrderRepository ordersRepo,
+            IRefreshTokenRepo refreshTokenRepo,
             IConnectionMultiplexer redis)
         {
             _shopDbContext = shopDbContext;
             ProductsRepo = productsRepo;
             CartsRepo = cartsRepo;
             OrdersRepo = ordersRepo;
+            RefreshTokenRepo = refreshTokenRepo;
             _redis = redis.GetDatabase();
         }
 
@@ -37,5 +38,7 @@ namespace Ai_ShopBot.Presistance
         }
 
         public IDatabase Redis => _redis;
+
+        public IRefreshTokenRepo RefreshTokenRepo { get; private set; }
     }
 }

@@ -9,6 +9,7 @@ namespace Ai_ShopBot.Application.Interfaces
         IProductRepository ProductsRepo { get; }
         IOrderRepository OrdersRepo { get; }
         IBaseRepository<Cart> CartsRepo { get; }
+        IRefreshTokenRepo RefreshTokenRepo { get; }
         IDatabase Redis { get; }
         Task SaveAsync(CancellationToken cancellationToken = default);
     }

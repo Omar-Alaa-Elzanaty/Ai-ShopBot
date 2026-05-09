@@ -31,7 +31,7 @@ namespace Ai_shopBot.Infrastructure.Services
         {
             var InitialChatInfo = await File.ReadAllTextAsync("wwwroot/prompt.txt", cancellationToken);
 
-            //TODO: replace with real user id
+            //TODO: replace with real User id
             var userId = 1;// _context?.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var last10Messages = await _unitOfWork.Redis.ListRangeAsync($"chat_history:{userId}", -10, -1);

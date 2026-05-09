@@ -18,15 +18,18 @@ namespace Ai_ShopBot.Application.Features.Auth.Login
         private readonly SignInManager<User> _signManager;
         private readonly UserManager<User> _userManager;
         private readonly IAuthServices _authServices;
+        private readonly IUnitOfWork _unitOfWork;
 
         public LoginQueryHandler(
             SignInManager<User> signManager,
             UserManager<User> userManager,
-            IAuthServices authServices)
+            IAuthServices authServices,
+            IUnitOfWork unitOfWork)
         {
             _signManager = signManager;
             _userManager = userManager;
             _authServices = authServices;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseResponse<LoginQueryDto>> Handle(LoginQuery request, CancellationToken cancellationToken)
@@ -45,10 +48,22 @@ namespace Ai_ShopBot.Application.Features.Auth.Login
                 return BaseResponse<LoginQueryDto>.Failure("Invalid username or password", HttpStatusCode.Unauthorized);
             }
 
+            var refreshToken = new RefreshToken()
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Token = _authServices.GenerateRefreshToken(),
+                ExpiresOnUtc = DateTime.UtcNow.AddDays(7)
+            };
+
+            await _unitOfWork.RefreshTokenRepo.AddAsync(refreshToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+
             return BaseResponse<LoginQueryDto>.Success(new LoginQueryDto
             {
                 FullName = user.FullName,
-                Token = await _authServices.GenerateTokenAsync(user)
+                Token = await _authServices.GenerateTokenAsync(user),
+                RefreshToken = refreshToken.Token
             });
         }
     }

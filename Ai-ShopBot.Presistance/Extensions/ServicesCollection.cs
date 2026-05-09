@@ -65,7 +65,8 @@ namespace Ai_ShopBot.Presistance.Extensions
                 .AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IProductRepository, ProductRepository>()
-                .AddScoped<IOrderRepository, OrderRepository>();
+                .AddScoped<IOrderRepository, OrderRepository>()
+                .AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
 
             return services;
         }
