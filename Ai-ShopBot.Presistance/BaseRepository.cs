@@ -16,6 +16,10 @@ namespace Ai_ShopBot.Presistance
         {
 
         }
+        public virtual async Task<T?> GetByIdAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
         public virtual async Task AddAsync(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);

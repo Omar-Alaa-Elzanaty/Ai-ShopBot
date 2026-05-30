@@ -6,6 +6,7 @@ namespace Ai_ShopBot.Application.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
+        Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         Task AddRange(IEnumerable<T> entities);
         void Delete(T entity);

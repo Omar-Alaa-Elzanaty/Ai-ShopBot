@@ -1,6 +1,8 @@
-﻿using Ai_ShopBot.Application.Interfaces;
+﻿using Ai_ShopBot.Application.Features.Orders.Commands.Delete;
+using Ai_ShopBot.Application.Interfaces;
 using Ai_ShopBot.Core.Constants;
 using Carter;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ai_ShopBot.API.Endpoints
@@ -13,6 +15,7 @@ namespace Ai_ShopBot.API.Endpoints
                 .RequireAuthorization(policy => policy.RequireRole(Roles.Client));
 
             group.MapGet("AiChat", AiChat);
+            group.MapDelete("Orders/{orderId}", DeleteOrder);
         }
 
         public async Task AiChat(
@@ -28,6 +31,14 @@ namespace Ai_ShopBot.API.Endpoints
                 await response.WriteAsync(chunck, cancellationToken: cancellationToken);
                 await response.Body.FlushAsync(cancellationToken);
             }
+        }
+
+        public async Task<IResult> DeleteOrder(
+            int orderId,
+            ISender sender)
+        {
+            var result = await sender.Send(new DeleteOrderCommand { Id = orderId });
+            return Results.Ok(result);
         }
     }
 }
