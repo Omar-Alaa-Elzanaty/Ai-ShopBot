@@ -8,4 +8,5 @@
     <Project Path="Ai-ShopBot.Presistance/Ai-ShopBot.Presistance.csproj" Id="3b768062-f6c5-494f-b872-4eba63de6dca" />
   </Folder>
   <Project Path="Ai-ShopBot.API/Ai-ShopBot.API.csproj" />
+  <Project Path="Ai-ShopBot.UnitTests/Ai-ShopBot.UnitTests.csproj" />
 </Solution>
